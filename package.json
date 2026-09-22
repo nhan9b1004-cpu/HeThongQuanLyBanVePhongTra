@@ -1,0 +1,12 @@
+{
+  "name": "phongtra-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Package gốc — chỉ chứa dependency dùng chung cho scripts/ và tests/loadTest/ (seedData, load test). Backend thật nằm ở backend/package.json.",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "uuid": "^9.0.1"
+  }
+}
