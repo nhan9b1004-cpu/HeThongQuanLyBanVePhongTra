@@ -10,6 +10,7 @@ const errorHandler = require('./shared/middlewares/errorHandler');
 const bookingRoutes = require('./modules/booking/booking.routes');
 const initBookingSocket = require('./modules/booking/booking.socket');
 const paymentRoutes = require('./modules/payment/payment.routes');
+const ticketRoutes = require('./modules/tickets/ticket.routes');
 // const checkinRoutes = require('./modules/checkin-admin/checkin.routes'); // Người C tự thêm khi xong
 // const adminRoutes = require('./modules/checkin-admin/admin.routes');     // Người C tự thêm khi xong
 
@@ -21,6 +22,7 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
+app.use('/tickets', ticketRoutes);
 app.set('io', io);
 
 app.use('/api', bookingRoutes);
