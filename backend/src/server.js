@@ -9,8 +9,7 @@ dotenv.config();
 const errorHandler = require('./shared/middlewares/errorHandler');
 const bookingRoutes = require('./modules/booking/booking.routes');
 const initBookingSocket = require('./modules/booking/booking.socket');
-
-// const paymentRoutes = require('./modules/payment/payment.routes');       // Người B tự thêm khi xong
+const paymentRoutes = require('./modules/payment/payment.routes');
 // const checkinRoutes = require('./modules/checkin-admin/checkin.routes'); // Người C tự thêm khi xong
 // const adminRoutes = require('./modules/checkin-admin/admin.routes');     // Người C tự thêm khi xong
 
@@ -25,7 +24,7 @@ app.use(express.json());
 app.set('io', io);
 
 app.use('/api', bookingRoutes);
-// app.use('/api', paymentRoutes);
+app.use('/api', paymentRoutes);
 // app.use('/api', checkinRoutes);
 // app.use('/api', adminRoutes);
 

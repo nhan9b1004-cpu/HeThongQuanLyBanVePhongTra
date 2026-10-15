@@ -18,6 +18,10 @@ const keys = {
   revenue: (showId) => `show:${showId}:revenue`,
 
   paymentPendingQueue: () => `queue:payment_pending`,
+
+  // ===== PAYMENT - NGƯỜI B =====
+  payment: (paymentId) => `payment:${paymentId}`,
+  paymentByOrderCode: (orderCode) => `payment:order:${orderCode}`,
 };
 
 module.exports = keys;
