@@ -1,20 +1,24 @@
-# 🎵 Hệ Thống Quản Lý & Đặt Vé Phòng Trà Cao Cấp (Dark Luxury Theme)
+## 📋 Trạng Thái Phát Triển & Tiến Độ Dự Án (Project Status)
 
-Hệ thống đặt vé phòng trà thời gian thực sử dụng **Node.js, Express, Redis** (kiến trúc ZSet, Hash, Lua Script) và giao diện Dark Luxury tối giản, sang trọng.
-
-## 🚀 Tính năng nổi bật
-- **Quản lý 10 show diễn sắp tới**: Lưu trữ bằng Redis Sorted Set và Hash.
-- **Sơ đồ ghế 32 chỗ động**: Phân loại VIP (Sofa) và Standard (Bàn tròn/vuông), tính toán tọa độ linh hoạt.
-- **Giữ chỗ thời gian thực (Seat Holding)**: Sử dụng Redis Lua Script đảm bảo không bị xung đột, giữ chỗ trong 5 phút.
-- **Luồng thanh toán đa ghế**: Hướng dẫn chọn nhiều ghế, khởi tạo thanh toán và xác nhận vé qua Redis.
+### ✅ Các phần đã hoàn thiện (Completed):
+1. **Kiến trúc dữ liệu Redis**: 
+   - Xây dựng cấu trúc lưu trữ tối ưu cho hệ thống phòng trà sử dụng `Sorted Set` (`show:list:upcoming`), `Hash` cho thông tin chi tiết show và trạng thái ghế (`show:{id}:seats`, `show:{id}:seat:{id}`).
+   - Viết script tự động nạp dữ liệu (`seedData.js`) khởi tạo sẵn 10 đêm nhạc mẫu và 32 ghế/bàn cho mỗi show.
+2. **Backend Services & API**:
+   - Hoàn thiện các module nghiệp vụ đặt vé (`booking.service.js`, `booking.controller.js`).
+   - Xây dựng cơ chế giữ chỗ thời gian thực (Seat Holding) bằng Lua Script kết hợp fallback an toàn, ngăn chặn xung đột khi nhiều người chọn cùng một ghế.
+3. **Giao diện người dùng (UI/UX)**:
+   - Xây dựng hệ thống giao diện theo chủ đề **Dark Luxury** (tông nền đen huyền bí `#0d1117`, điểm xuyết màu vàng kim cương `#d4af37`) tạo cảm giác sang trọng đúng chất phòng trà cao cấp.
+   - Trang danh sách show diễn sắp tới và trang chọn sơ đồ ghế tương tác.
 
 ---
 
-## 🛠️ Hướng dẫn cài đặt & Chạy dự án
-
-### 1. Cấu hình môi trường (`.env`)
-Tạo file `.env` trong thư mục `backend/` với nội dung:
-```env
-PORT=5000
-REDIS_HOST=localhost
-REDIS_PORT=6379
+### 🚧 Các phần chưa hoàn thiện & Hướng phát triển tiếp theo (To-Do):
+1. **Trang thanh toán tích hợp (Checkout & Payment Flow)**:
+   - Chưa hoàn thiện trang thanh toán chi tiết, cổng thanh toán giả lập hoặc tích hợp thanh toán thực tế (VNPay/Momo).
+   - Chưa xử lý hoàn tất luồng callback xác nhận thanh toán để chuyển trạng thái ghế từ `held` sang `sold` tự động qua WebSocket/Polling.
+2. **Sơ đồ ghế trực quan tích hợp hoàn chỉnh (Advanced Seat Map View)**:
+   - Phần render sơ đồ ghế (`SeatMapView`) đang ở mức cơ bản, chưa tối ưu hoàn toàn việc phân vùng không gian thực tế của phòng trà (sân khấu, góc nhìn, khoảng cách bàn).
+3. **Hệ thống Quản lý tài khoản người dùng (User Authentication & Profile)**:
+   - Chưa có tính năng đăng ký, đăng nhập tài khoản khách hàng, phân quyền người dùng (User vs Admin).
+   - Chưa lưu trữ lịch sử vé đã đặt của từng cá nhân vào cơ sở dữ liệu.
