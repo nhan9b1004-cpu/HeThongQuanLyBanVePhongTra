@@ -28,6 +28,10 @@ app.use('/api', paymentRoutes);
 // app.use('/api', checkinRoutes);
 // app.use('/api', adminRoutes);
 
+// Thêm dòng này vào server.js để dán localhost:5000 lên web không bị báo lỗi nữa
+app.get('/', (req, res) => {
+  res.send('Server Phòng Trà Backend đang chạy ngon lành nè má ơi! 🚀');
+});
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 initBookingSocket(io);

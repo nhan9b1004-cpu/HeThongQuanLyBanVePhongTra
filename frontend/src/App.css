@@ -1,0 +1,53 @@
+/* --- GIAO DIỆN ĐỒNG BỘ TOÀN HỆ THỐNG PHÒNG TRÀ (DARK THEME) --- */
+body {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Khung bọc form / nội dung chung cho mọi trang */
+.luxury-container, div[style*="max-width: 500px"], .seat-page-wrapper {
+  background-color: #161b22 !important;
+  color: #f0f6fc !important;
+  border: 1px solid #30363d !important;
+  border-radius: 16px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Tiêu đề chung */
+h1, h2, h3 {
+  color: #e6dfd5 !important;
+  text-align: center;
+}
+
+/* Input / Form chung */
+input, select, textarea {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+  border: 1px solid #30363d !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  font-size: 15px !important;
+}
+
+input:focus {
+  border-color: #d4af37 !important;
+  outline: none !important;
+}
+
+/* Nút bấm vàng kim loại đặc trưng phòng trà */
+button {
+  background: linear-gradient(135deg, #d4af37, #aa7c11) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.85;
+}

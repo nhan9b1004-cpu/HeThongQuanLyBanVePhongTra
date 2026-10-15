@@ -1,6 +1,6 @@
 const redisClient = require('../../config/redis');
-const keys = require('../../shared/keys');
-
+const keys = require('../../../../shared/keys');
+const { SEAT_STATUS } = require('../../../../shared/constants');
 function initBookingSocket(io) {
   io.on('connection', (socket) => {
     socket.on('joinShow', (showId) => {
