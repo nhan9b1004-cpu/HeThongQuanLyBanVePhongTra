@@ -3,84 +3,164 @@ require('dotenv').config();
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379,
+  port: Number(process.env.REDIS_PORT) || 6379,
   password: process.env.REDIS_PASSWORD || undefined,
 });
 
-const showsList = [
-  { id: 'demo-show-1', name: 'Đêm nhạc Trịnh - Acoustic Night', price: 150000 },
-  { id: 'show-2', name: 'Acoustic Mùa Hè Rực Rỡ', price: 200000 },
-  { id: 'show-3', name: 'Bolero Tình Khúc Xưa & Nay', price: 180000 },
-  { id: 'show-4', name: 'Jazz Đêm Sài Gòn', price: 250000 },
-  { id: 'show-5', name: 'Rock Việt Hoài Niệm', price: 220000 },
-  { id: 'show-6', name: 'Bản Tình Ca Mùa Hạ', price: 170000 },
-  { id: 'show-7', name: 'Giai Điệu Tự Hào', price: 190000 },
-  { id: 'show-8', name: 'Piano & Violin Đêm Trăng', price: 300000 },
-  { id: 'show-9', name: 'Ca Nhạc Tổng Hợp V-Pop', price: 160000 },
-  { id: 'show-10', name: 'Khúc Trữ Tình Cuối Tuần', price: 150000 },
+// Danh sach 10 show mau
+const shows = [
+  {
+    id: 'demo-show-1',
+    name: 'Dem nhac Trinh - Acoustic Night',
+    artist: 'Various Artists',
+    datetime: '2026-10-20T19:30:00+07:00',
+    location: 'Phong tra ABC, Q1, TP.HCM',
+    price: 150000,
+  },
+  {
+    id: 'demo-show-2',
+    name: 'Giai dieu Bolero',
+    artist: 'Le Quyen',
+    datetime: '2026-10-22T20:00:00+07:00',
+    location: 'Phong tra May, Q3, TP.HCM',
+    price: 200000,
+  },
+  {
+    id: 'demo-show-3',
+    name: 'Acoustic Chill Night',
+    artist: 'Various Artists',
+    datetime: '2026-10-24T19:00:00+07:00',
+    location: 'Phong tra Gio, Q10, TP.HCM',
+    price: 120000,
+  },
+  {
+    id: 'demo-show-4',
+    name: 'Dem nhac nhac Tre',
+    artist: 'Various Artists',
+    datetime: '2026-10-26T19:30:00+07:00',
+    location: 'Phong tra ABC, Q1, TP.HCM',
+    price: 180000,
+  },
+  {
+    id: 'demo-show-5',
+    name: 'Tinh khuc vuot thoi gian',
+    artist: 'Various Artists',
+    datetime: '2026-10-28T20:00:00+07:00',
+    location: 'Phong tra May, Q3, TP.HCM',
+    price: 220000,
+  },
+  {
+    id: 'demo-show-6',
+    name: 'Jazz Evening',
+    artist: 'Saigon Jazz Band',
+    datetime: '2026-10-30T19:30:00+07:00',
+    location: 'Phong tra Gio, Q10, TP.HCM',
+    price: 250000,
+  },
+  {
+    id: 'demo-show-7',
+    name: 'Dem nhac nhung ban tinh ca',
+    artist: 'Various Artists',
+    datetime: '2026-11-01T19:00:00+07:00',
+    location: 'Phong tra ABC, Q1, TP.HCM',
+    price: 170000,
+  },
+  {
+    id: 'demo-show-8',
+    name: 'Sunday Acoustic',
+    artist: 'Acoustic Band',
+    datetime: '2026-11-03T19:30:00+07:00',
+    location: 'Phong tra May, Q3, TP.HCM',
+    price: 130000,
+  },
+  {
+    id: 'demo-show-9',
+    name: 'Live Music - Unplugged',
+    artist: 'Various Artists',
+    datetime: '2026-11-05T20:00:00+07:00',
+    location: 'Phong tra Gio, Q10, TP.HCM',
+    price: 160000,
+  },
+  {
+    id: 'demo-show-10',
+    name: 'Dem nhac cuoi tuan',
+    artist: 'Saigon Music Band',
+    datetime: '2026-11-07T19:30:00+07:00',
+    location: 'Phong tra ABC, Q1, TP.HCM',
+    price: 190000,
+  },
+];
+
+// 6 ban thuong va 2 ban VIP cho moi show
+const tables = [
+  { id: 'B1', type: 'standard', x: 100, y: 100, shape: 'round', capacity: 4 },
+  { id: 'B2', type: 'standard', x: 250, y: 100, shape: 'round', capacity: 4 },
+  { id: 'B3', type: 'standard', x: 400, y: 100, shape: 'round', capacity: 4 },
+  { id: 'B4', type: 'standard', x: 100, y: 250, shape: 'round', capacity: 4 },
+  { id: 'B5', type: 'standard', x: 250, y: 250, shape: 'round', capacity: 4 },
+  { id: 'B6', type: 'standard', x: 400, y: 250, shape: 'round', capacity: 4 },
+  { id: 'V1', type: 'vip', x: 100, y: 400, shape: 'sofa', capacity: 2 },
+  { id: 'V2', type: 'vip', x: 300, y: 400, shape: 'sofa', capacity: 2 },
 ];
 
 async function seed() {
-  console.log('🌱 Đang tạo toàn bộ 10 đêm nhạc và ghế vào Redis...');
+  try {
+    console.log('🌱 Bat dau tao 10 show mau...');
 
-  for (const show of showsList) {
-    const showId = show.id;
+    for (const show of shows) {
+      // Tao thong tin show
+      await redis.hset(`show:${show.id}`, {
+        name: show.name,
+        artist: show.artist,
+        datetime: show.datetime,
+        location: show.location,
+        status: 'open',
+        price_default: String(show.price),
+      });
 
-    // 1. Lưu thông tin show
-    await redis.hset(`show:${showId}`, {
-      name: show.name,
-      artist: 'Various Artists',
-      datetime: '2026-10-15T19:30:00+07:00',
-      location: 'Phòng trà ABC, Q1, TP.HCM',
-      status: 'open',
-      price_default: show.price.toString(),
-    });
+      // Them show vao danh sach show sap dien
+      await redis.zadd(
+        'show:list:upcoming',
+        new Date(show.datetime).getTime(),
+        show.id
+      );
 
-    // Lưu vào các key list/upcoming để API getShows nhận diện được
-    await redis.zadd('show:list:upcoming', new Date('2026-10-15T19:30:00+07:00').getTime(), showId);
-    await redis.sadd('shows:upcoming', showId);
+      // Tao so do ban va trang thai ghe rieng cho tung show
+      for (const table of tables) {
+        const price =
+          table.type === 'vip'
+            ? show.price + 200000
+            : show.price;
 
-    // 2. Tạo 32 ghế cho show này (4 hàng A, B, C, D x 8 cột)
-    const rows = ['A', 'B', 'C', 'D'];
-    const cols = 8;
-    const statuses = ['available', 'available', 'available', 'held', 'sold', 'disabled'];
+        await redis.hset(
+          `show:${show.id}:seats`,
+          table.id,
+          'available'
+        );
 
-    for (let rIndex = 0; rIndex < rows.length; rIndex++) {
-      const rowLetter = rows[rIndex];
-      for (let cIndex = 1; cIndex <= cols; cIndex++) {
-        const seatId = `${rowLetter}${cIndex}`;
-        const isVip = rowLetter === 'A';
-        const type = isVip ? 'vip' : 'standard';
-        const price = isVip ? show.price * 2 : show.price;
-        const shape = isVip ? 'sofa' : 'round';
-        const capacity = isVip ? 2 : 4;
-
-        const x = (cIndex - 1) * 90 + 60;
-        const y = rIndex * 110 + 60;
-        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-
-        // Lưu trạng thái ghế vào hash tổng
-        await redis.hset(`show:${showId}:seats`, seatId, randomStatus);
-
-        // Lưu chi tiết từng ghế
-        await redis.hset(`show:${showId}:seat:${seatId}`, {
-          type,
-          price: price.toString(),
-          x,
-          y,
-          table_shape: shape,
-          capacity: capacity.toString(),
-          status: randomStatus,
+        await redis.hset(`show:${show.id}:seat:${table.id}`, {
+          type: table.type,
+          price: String(price),
+          x: String(table.x),
+          y: String(table.y),
+          table_shape: table.shape,
+          capacity: String(table.capacity),
         });
       }
-    }
-  }
 
-  console.log('✅ Seed toàn bộ 10 show và ghế thành công rực rỡ!');
-  redis.disconnect();
+      console.log(`✅ Da tao: ${show.id} - ${show.name}`);
+    }
+
+    console.log('\n🎉 Hoan tat!');
+    console.log(`Tong so show: ${shows.length}`);
+    console.log(`Tong so ban: ${shows.length * tables.length}`);
+    console.log('Moi show co 8 ban: 6 ban thuong va 2 ban VIP.');
+  } finally {
+    redis.disconnect();
+  }
 }
 
 seed().catch((err) => {
-  console.error('❌ Lỗi seed:', err);
-  process.exit(1);
+  console.error('❌ Loi khi seed du lieu:', err);
+  process.exitCode = 1;
 });
